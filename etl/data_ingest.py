@@ -5,7 +5,7 @@ from os.path import join
 from database import engine, _add_tables
 # from models import (DEVICE_DIRECTORY, 
 #                     SUB_DEVICE_DIRECTORY)
-from model import * 
+from model import *  
 
 def load_csv_to_table(table_name:str, csv_path:str):
     """

@@ -15,4 +15,4 @@ SQLAlchemy==2.0.29
 starlette==0.37.2
 typing_extensions==4.11.0
 pandas 
-jupyter==1.0.0
+jupyter==1.0.0 

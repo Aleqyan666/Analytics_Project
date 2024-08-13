@@ -14,4 +14,4 @@ COPY . .
 # Expose port 3000 
 EXPOSE 3000
 # Command to run the python file
-CMD ["python", "data_ingest.py"]
+CMD ["python", "data_ingest.py"] 

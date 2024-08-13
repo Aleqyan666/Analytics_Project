@@ -6,7 +6,7 @@ import sqlalchemy as sql
 import sqlalchemy.ext.declarative as declarative
 import sqlalchemy.orm as orm
 from dotenv import load_dotenv
-import os
+import os 
 
 
 # Load environment variables from .env file
