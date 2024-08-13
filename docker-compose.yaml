@@ -1,0 +1,78 @@
+services:
+
+  db: #service name
+    container_name: Postgresql_db # original one was postgresql_db
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment: 
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data #persisting data  
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]  # Healthcheck for PostgreSQL
+      interval: 10s
+      timeout: 10s 
+      retries: 5  
+           
+  pgadmin:  
+    container_name: Pgadmin # original one was pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - 5050:80 # for local browser (80 is the default port of the browsed)
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin  # Persisting pgAdmin configuration and sessions
+    depends_on: 
+      - db
+
+#  Database setup
+  db_setup:
+    container_name: Db_setup
+    build: ./etl
+    # restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      db:
+        condition: service_healthy  # Wait for PostgreSQL to be healthy before setting up
+    healthcheck:
+      test: "exit 0"
+
+#  jupyter notebooks setup
+  j_notebooks:
+    container_name: jupyter_notebooks
+    build: ./model
+    # restart: always
+    ports:
+      - 8888:8888
+    volumes:
+      - ./model:/model
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: "exit 0"
+
+#Setting up Apache
+  superset:
+      build:
+        context: ./superset
+        dockerfile: dockerfile
+      # restart: always
+      container_name: Superset
+      environment:
+        - ADMIN_USERNAME=admin
+        - ADMIN_EMAIL=admin@superset.com
+        - ADMIN_PASSWORD=admin
+      ports:
+        - '8088:8088'
+      depends_on:
+      - db
+  
+ 
