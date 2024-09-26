@@ -3,6 +3,7 @@
 data
 pgadmin_data
 postgres_data
+superset_home
 # python
 
 # Byte-compiled / optimized / DLL files
